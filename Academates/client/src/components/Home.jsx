@@ -47,7 +47,7 @@ const Home = () => {
           alignItems={"center"}
           direction={["column", "row"]}
         >
-          <Image src={img5} h={["40", "400"]} />
+          <Image src={img5} h={["40", "400"]} borderRadius={"50%"} />
           <Text
             letterSpacing={"widest"}
             lineHeight={"190%"}
