@@ -5,11 +5,10 @@ const studentSchema= mongoose.Schema({
     firstName: String,
     middleName:String,
     lastName:String,
-    email: String,
     intrests: [String],
     number: Number
 })
 
 const Student = mongoose.model('studentModel', studentSchema);
 
-export default student;
+export default Student;

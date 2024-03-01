@@ -7,9 +7,9 @@ const studyMaterialSchema= mongoose.Schema({
     createdAt: {
         type: Date,
         default: new Date()
-    },
+    }
 })
 
-const StudyMaterial= mongoose.model('teacherModel', StudyMaterialSchema);
+const StudyMaterial= mongoose.model('studyMaterialModel', studyMaterialSchema);
 
 export default StudyMaterial;
