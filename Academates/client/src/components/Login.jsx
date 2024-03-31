@@ -36,7 +36,7 @@ const Login = () => {
 
       setTimeout(() => {
         setAlert(null);
-        navigate("/home");
+        navigate("/teacher-dashboard");
       }, 2000);
     } else {
       setAlert("Login failed");
