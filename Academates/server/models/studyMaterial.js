@@ -1,6 +1,6 @@
 import mongoose  from "mongoose";
 
-const studyMaterialSchema= mongoose.Schema({
+const studyMaterialSchema= new mongoose.Schema({
     StudyMaterialID: String,
     title: String,
     fileName: String,
@@ -8,7 +8,7 @@ const studyMaterialSchema= mongoose.Schema({
         type: Date,
         default: new Date()
     }
-})
+});
 
 const StudyMaterial= mongoose.model('studyMaterialModel', studyMaterialSchema);
 
