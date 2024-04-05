@@ -8,6 +8,7 @@ const app = express();
 dotenv.config();
 
 import AccountRoute from './routes/Account.js';
+import { teacherDashboard } from './controllers/TeacherDashboard.js';
 
 app.use(bodyParser.json({limit: "30mb", extended: true}));
 app.use(bodyParser.urlencoded({limit: "30mb", extended: true}));
@@ -19,3 +20,4 @@ mongoose.connect(process.env.CONNECTION_URL,{useNewUrlParser: true, useUnifiedTo
     .catch((error) => console.log(error.message));
 
 app.use('/', AccountRoute);
+app.use('/', teacherDashboard);

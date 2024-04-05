@@ -4,50 +4,74 @@ import  User  from '../models/user.js';
 //password handling
 import bcrypt from 'bcrypt';
 
-export const logIn = async (req,res) => {
-    let {email, password} = req.body;
+export const signUp = async (req,res) => {
+    let {name, email, password} = req.body;
+    name=name.trim();
     email=email.trim();
     password=password.trim();
 
-    if(email==""|| password==""){
+    if(name=="" || email=="" || password=="" ){
         res.json({
             status: "FAILED",
-            message: "Empty credentials"
+            message: "Empty Input Fields"
+        });
+    } else if (!/^[a-zA-z0-9]*$/.test(name)){
+        res.json({
+            ststus: "FAILED",
+            message: "Invalid Name"
         })
-    } else{
-        User.find({email}).then(data =>{
-            if(data){
+    } else if (!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email)){
+        res.json({
+            ststus: "FAILED",
+            message: "Invalid Email"
+        })
+    } else if(password.length < 8){
+        res.json({
+            ststus: "FAILED",
+            message: "Password is too short"
+        })
+    } else {
+        User.find({email}).then(result => {
+            if(result.length){
+                res.json({
+                    status: "FAILED",
+                    message: "User with the provided email already exists"
+                })
+            } else{
+                //Try to create new user
 
-                const hashedPassword = data[0].password;
-                bcrypt.compare(password, hashedPassword).then(result=>{
-                    if(result){
+                //password handling
+                const saltRounds =10;
+                bcrypt.hash(password, saltRounds).then(hashedPassword =>{
+                    const newUser= new User({
+                        name,
+                        email,
+                        password: hashedPassword,
+                    });
+
+                    newUser.save().then(result => {
                         res.json({
                             status: "SUCCESS",
                             message: "Signup successful",
-                            data: data
+                            data: result,
                         })
-                    } else{
+                    })
+                    .catch(err => {
                         res.json({
                             status: "FAILED",
-                            message: "Invalid password entered"
+                            message: "An error occured while saving user account"
                         })
-                    }
+                    })
                 })
-                .catch(err => {
+                .catch(err =>{
                     res.json({
                         status: "FAILED",
-                        message: "An error occured while comparing passwords"
+                        message: "An error occured while hashing the password"
                     })
-
-                })
-            }else{
-                res.json({
-                    status: "FAILED",
-                    message: "Invalid credentials entered"
                 })
             }
-        })
-        .catch(err =>{
+        }).catch(err =>{
+            console.log(err);
             res.json({
                 status: "FAILED",
                 message: "An error occured while checking for existing user"
