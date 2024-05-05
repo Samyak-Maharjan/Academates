@@ -1,27 +1,27 @@
-import express from "express";
-import { body } from "express-validator";
-
-import fetchuser from "../middlewares/fetchuser.js";
-
-import { createUser, login, getUser } from "../controllers/userController.js";
-
+const express = require('express');
 const router = express.Router();
+const { body } = require('express-validator');
 
-router
-  .route("/register")
-  .post(
-    [
-      body("name").exists(),
-      body("email").isEmail().exists(),
-      body("password").isLength({ min: 5 }).exists(),
-    ],
+const fetchuser = require('../middlewares/fetchuser');
+
+const {createUser, login, getUser} = require('../controllers/userController');
+
+
+router.route('/register')
+.post([
+    body('name').exists(),
+    body('email').isEmail(),
+    body('password').isLength({ min: 5 })],
     createUser
-  );
+);
 
-router
-  .route("/login")
-  .post([body("email").isEmail().exists(), body("password").exists()], login);
+router.route('/login')
+.post([
+    body('email').isEmail().exists(),
+    body('password').exists()],
+    login
+);
 
-router.route("/getuser/:id").get(fetchuser, getUser);
+router.route('/getuser/:id').get(fetchuser, getUser);
 
-export default router;
+module.exports = router;

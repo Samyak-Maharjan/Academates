@@ -1,14 +1,42 @@
-import mongoose from "mongoose";
-import Teacher from "./teacher.js";
-import Student from "./student.js";
+const mongoose =  require('mongoose');
+const bycrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken')
 
-const UserSchema= new mongoose.Schema({
-    userName: String,
-    email: String,
-    password: String,
-    // userType: [{Teacher,Student}]
+const UserSchema = mongoose.Schema({
+    name: {
+        type: String,
+        required: [true, 'Please provide name']
+    },
+    email: {
+        type: String,
+        required: [true, 'Please provide email'],
+        unique: true
+    },
+    password: {
+        type: String,
+        required: [true, 'Please provide password']
+    },
+    role: {
+        type: String
+    }
+},{timestamps: true});
+
+
+UserSchema.pre('save',  async function(){
+    const salt = await bycrypt.genSalt(10);
+    this.password = await bycrypt.hash(this.password, salt);
 });
 
-const User = mongoose.model('UserModel', UserSchema);
+UserSchema.methods.createJWT = function(){
+   return jwt.sign({userId: this._id}, process.env.JWT_SECRET, { expiresIn: process.env.JWT_LIFETIME});
+}
 
-export default User;
+UserSchema.methods.comparePassword = async function(providedPassword){
+    const isMatch = await bycrypt.compare(providedPassword, this.password);
+    return isMatch;
+}
+
+
+
+
+module.exports = mongoose.model('User', UserSchema);

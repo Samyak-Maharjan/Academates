@@ -1,16 +1,17 @@
 import mongoose from "mongoose";
-import StudyMaterial from "./studyMaterial.js";
+import StudyMaterial from "./studyMaterial";
 
-const teacherSchema = new mongoose.Schema({
+const teacherSchema = mongoose.Schema({
     teacherID:String,
     firstName: String,
     middleName:String,
     lastName:String,
+    email: String,
     subjects: [String],
     number: Number,
     qualifications: [String],
-    // studyMaterial: StudyMaterial.schema
-});
+    studyMaterials: StudyMaterial
+})
 
 const Teacher= mongoose.model('teacherModel', teacherSchema);
 

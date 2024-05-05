@@ -16,7 +16,7 @@ import { Link } from "react-router-dom";
 
 const Login = () => {
   const [credentials, setCredentials] = useState({
-    username: "",
+    email: "",
     password: "",
   });
   const [alert, setAlert] = useState(null);
@@ -26,23 +26,30 @@ const Login = () => {
     setCredentials({ ...credentials, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (
-      credentials.username === "aayushma" &&
-      credentials.password === "aayushma"
-    ) {
-      setAlert("Login successfull");
+    const {email, password} = credentials;
+    const response = await fetch("http://localhost:5000/api/auth/login", {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({email, password})
+    });
 
+    const json = await response.json()
+    console.log(json);
+
+    if(json.success){
+      setAlert("Login success");
       setTimeout(() => {
-        setAlert(null);
-        navigate("/teacher-dashboard");
+        navigate("/home");
       }, 2000);
-    } else {
+     } 
+     else {
       setAlert("Login failed");
-      setCredentials({ username: "", password: "" });
+      setCredentials({ email: "", password: "" });
       setTimeout(() => {
-        setAlert(null);
       }, 2000);
     }
   };
@@ -71,13 +78,13 @@ const Login = () => {
               </Heading>
               {alert && <p id="alert-text">{alert}</p>}
               <Input
-                placeholder={"Username"}
+                placeholder={"Email"}
                 type={"text"}
-                id="username"
-                name="username"
+                id="email"
+                name="email"
                 required
                 focusBorderColor={"blue.500"}
-                value={credentials.username}
+                value={credentials.email}
                 onChange={onChange}
               />
               <Input

@@ -1,22 +1,19 @@
-import express from "express";
-import bodyParser from "body-parser";
-import cors from "cors";
-import dotenv from "dotenv";
+require("dotenv").config();
 
+const express = require("express");
 const app = express();
-dotenv.config();
 
-// middlewares
-app.use(bodyParser.json({ limit: "30mb", extended: true }));
-app.use(bodyParser.urlencoded({ limit: "30mb", extended: true }));
+const cors = require("cors");
+
+//middlewares
+app.use(express.json());
 app.use(cors());
 
 //database
-import connectDb from "./db/connect.js";
+const connectDb = require("./db/connect");
 
 //router
-import authRouter from "./routes/authRoutes.js";
-import AccountRoute from "./routes/Account.js";
+const authRouter = require("./routes/authRoutes");
 
 //routes
 app.get("/", (req, res) => {
@@ -24,7 +21,6 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/auth", authRouter);
-app.use("/auth", AccountRoute);
 
 const port = process.env.PORT || 5000;
 const start = async () => {
@@ -38,5 +34,4 @@ const start = async () => {
     console.log(error);
   }
 };
-
 start();
